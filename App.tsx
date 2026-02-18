@@ -106,7 +106,9 @@ function App() {
   const { isReady: canvaReady, openInCanva } = useCanva();
   const { addToast } = useToastContext();
 
-  const [viewMode, setViewMode] = useState<'both' | 'edit' | 'preview'>('both');
+  const [viewMode, setViewMode] = useState<'both' | 'edit' | 'preview'>(
+    window.innerWidth < 1024 ? 'edit' : 'both'
+  );
   const [activeSectionId, setActiveSectionId] = useState<string | null>(null);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
   const [isExporting, setIsExporting] = useState(false);
@@ -207,7 +209,7 @@ function App() {
   };
 
   return (
-    <div className="flex h-screen w-full bg-gray-100 overflow-hidden">
+    <div className="flex h-full w-full bg-gray-100 overflow-hidden">
 
       {/* ============ EDITOR PANEL ============ */}
       <div className={`flex-1 flex flex-col h-full bg-white border-r border-gray-200 transition-all duration-300 ${viewMode === 'preview' ? 'hidden' : 'block'}`}>
@@ -310,7 +312,7 @@ function App() {
             ))}
 
             {/* Add Section */}
-            <div className="pt-4 pb-16">
+            <div className="pt-4 pb-24">
               <div className="text-center">
                 <button
                   onClick={() => setShowAddMenu(!showAddMenu)}
@@ -346,14 +348,14 @@ function App() {
       {/* ============ PREVIEW PANEL ============ */}
       <div className={`relative bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center transition-all duration-300 ${viewMode === 'edit' ? 'hidden' : 'flex-1'}`}>
 
-        <div className="h-full w-full flex items-center justify-center p-4">
+        <div className={`h-full w-full flex items-center justify-center ${isMobile ? 'p-2 pb-20' : 'p-4'}`}>
           <MobilePreview sections={sections} />
         </div>
       </div>
 
       {/* ============ MOBILE TAB BAR ============ */}
       {isMobile && (
-        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex z-50 shadow-lg">
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex z-50 shadow-lg" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
           <button
             onClick={() => setViewMode('edit')}
             className={`flex-1 flex flex-col items-center py-3 gap-1 transition-colors ${
