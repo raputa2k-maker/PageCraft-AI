@@ -215,50 +215,52 @@ function App() {
       <div className={`flex-1 flex flex-col h-full bg-white border-r border-gray-200 transition-all duration-300 ${viewMode === 'preview' ? 'hidden' : 'block'}`}>
 
         {/* Header */}
-        <div className="p-5 border-b border-gray-100 bg-white z-10">
-          <div className="flex justify-between items-center mb-4">
-            <h1 className="text-lg font-black text-gray-900 flex items-center gap-2.5">
-              <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-sm">
-                <Sparkles size={16} className="text-white" />
+        <div className="p-4 sm:p-5 border-b border-gray-100 bg-white z-10 overflow-hidden">
+          <div className="flex justify-between items-center mb-4 gap-2">
+            <h1 className="text-base sm:text-lg font-black text-gray-900 flex items-center gap-2 flex-shrink-0">
+              <div className="w-7 h-7 sm:w-8 sm:h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-sm flex-shrink-0">
+                <Sparkles size={14} className="text-white" />
               </div>
-              상세페이지 메이커
+              <span className="truncate">상세페이지 메이커</span>
             </h1>
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-0.5 sm:gap-1 flex-shrink-0">
               <button
                 onClick={undo}
                 disabled={!canUndo}
-                className="p-2 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-lg disabled:opacity-25 transition-all"
+                className="p-1.5 sm:p-2 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-lg disabled:opacity-25 transition-all"
                 title="되돌리기 (Ctrl+Z)"
               >
-                <Undo2 size={16} />
+                <Undo2 size={15} />
               </button>
               <button
                 onClick={redo}
                 disabled={!canRedo}
-                className="p-2 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-lg disabled:opacity-25 transition-all"
+                className="p-1.5 sm:p-2 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-lg disabled:opacity-25 transition-all"
                 title="다시 실행 (Ctrl+Y)"
               >
-                <Redo2 size={16} />
+                <Redo2 size={15} />
               </button>
 
-              <div className="w-px h-5 bg-gray-200 mx-1" />
+              <div className="w-px h-5 bg-gray-200 mx-0.5 sm:mx-1" />
 
               <button
                 onClick={handleReset}
-                className="p-2 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-all"
+                className="p-1.5 sm:p-2 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-all"
                 title="초기화"
               >
-                <RotateCcw size={16} />
+                <RotateCcw size={15} />
               </button>
 
-              <button
-                onClick={handleExportPng}
-                disabled={isExporting}
-                className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-xl text-sm font-bold hover:bg-black transition-all disabled:opacity-50 shadow-sm hover:shadow-md ml-1"
-              >
-                <Download size={15} />
-                이미지 저장
-              </button>
+              {!isMobile && (
+                <button
+                  onClick={handleExportPng}
+                  disabled={isExporting}
+                  className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-xl text-sm font-bold hover:bg-black transition-all disabled:opacity-50 shadow-sm hover:shadow-md ml-1"
+                >
+                  <Download size={15} />
+                  이미지 저장
+                </button>
+              )}
             </div>
           </div>
 
@@ -272,7 +274,7 @@ function App() {
               value={product.name}
               onChange={(e) => setProduct({ ...product, name: e.target.value })}
             />
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               <input
                 type="text"
                 placeholder="타겟 고객 (예: 직장인)"
@@ -292,7 +294,7 @@ function App() {
         </div>
 
         {/* Scrollable Section List */}
-        <div className="flex-1 overflow-y-auto p-5 custom-scrollbar scroll-smooth">
+        <div className="flex-1 overflow-y-auto overflow-x-hidden p-3 sm:p-5 custom-scrollbar scroll-smooth">
           <div className="space-y-3 max-w-2xl mx-auto">
             {sections.map((section, index) => (
               <SectionEditor
