@@ -5,8 +5,8 @@ import MobilePreview from './components/MobilePreview';
 import { usePageBuilder } from './hooks/usePageBuilder';
 import { useCanva } from './hooks/useCanva';
 import { useToastContext } from './contexts/ToastContext';
-import { exportPreviewAsPng } from './utils/exportUtils';
-import { Smartphone, Layout, PlusCircle, Download, Undo2, Redo2, RotateCcw, Sparkles } from 'lucide-react';
+import { exportPreviewAsPng, downloadSingleImage } from './utils/exportUtils';
+import { Smartphone, Layout, PlusCircle, Download, Undo2, Redo2, RotateCcw, Sparkles, FileDown, ImageDown, X } from 'lucide-react';
 
 const INITIAL_SECTIONS: SectionData[] = [
   {
@@ -113,6 +113,7 @@ function App() {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
   const [isExporting, setIsExporting] = useState(false);
   const [showAddMenu, setShowAddMenu] = useState(false);
+  const [showSaveMenu, setShowSaveMenu] = useState(false);
 
   // Track the viewMode before mobile forced it to change
   const [prevDesktopMode, setPrevDesktopMode] = useState<'both' | 'edit' | 'preview'>('both');
@@ -181,6 +182,21 @@ function App() {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [undo, redo]);
+
+  // Filter sections that have AI-generated images
+  const sectionsWithImages = sections.filter(s =>
+    (s.imageUrl && s.imageUrl.startsWith('data:')) ||
+    (s.imageUrls && s.imageUrls.some(url => url && url.startsWith('data:')))
+  );
+
+  const handleDownloadSingleImage = (dataUrl: string, sectionType: string, index?: number) => {
+    const date = new Date().toISOString().slice(0, 10);
+    const filename = index !== undefined
+      ? `${sectionType}-${index + 1}-${date}.png`
+      : `${sectionType}-image-${date}.png`;
+    downloadSingleImage(dataUrl, filename);
+    addToast('이미지가 다운로드되었습니다!', 'success');
+  };
 
   const handleExportPng = useCallback(async () => {
     setIsExporting(true);
@@ -253,7 +269,7 @@ function App() {
 
               {!isMobile && (
                 <button
-                  onClick={handleExportPng}
+                  onClick={() => setShowSaveMenu(true)}
                   disabled={isExporting}
                   className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-xl text-sm font-bold hover:bg-black transition-all disabled:opacity-50 shadow-sm hover:shadow-md ml-1"
                 >
@@ -377,13 +393,127 @@ function App() {
             <span className="text-[10px] font-semibold">미리보기</span>
           </button>
           <button
-            onClick={handleExportPng}
+            onClick={() => setShowSaveMenu(true)}
             disabled={isExporting}
             className="flex-1 flex flex-col items-center py-3 gap-1 text-gray-400 disabled:opacity-50"
           >
             <Download size={20} />
             <span className="text-[10px] font-semibold">저장</span>
           </button>
+        </div>
+      )}
+
+      {/* ============ SAVE MENU (BOTTOM SHEET) ============ */}
+      {showSaveMenu && (
+        <div className="fixed inset-0 z-[60] bg-black/40 animate-fade-in-up" onClick={() => setShowSaveMenu(false)}>
+          <div
+            className="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl max-h-[70vh] overflow-y-auto shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+            style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between p-4 border-b border-gray-100 sticky top-0 bg-white rounded-t-2xl z-10">
+              <h3 className="text-base font-bold text-gray-900">이미지 저장</h3>
+              <button
+                onClick={() => setShowSaveMenu(false)}
+                className="p-1.5 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-all"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="p-4 space-y-3">
+              {/* Full page export */}
+              <button
+                onClick={() => {
+                  setShowSaveMenu(false);
+                  handleExportPng();
+                }}
+                disabled={isExporting}
+                className="w-full flex items-center gap-3 p-3 bg-gray-900 text-white rounded-xl hover:bg-black transition-all disabled:opacity-50"
+              >
+                <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <FileDown size={20} />
+                </div>
+                <div className="text-left">
+                  <div className="text-sm font-bold">전체 상세페이지 저장</div>
+                  <div className="text-xs text-gray-400">모든 섹션을 하나의 이미지로 내보내기</div>
+                </div>
+              </button>
+
+              {/* Individual images section */}
+              {sectionsWithImages.length > 0 && (
+                <>
+                  <div className="flex items-center gap-2 pt-2">
+                    <div className="h-px flex-1 bg-gray-200" />
+                    <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">개별 이미지 저장</span>
+                    <div className="h-px flex-1 bg-gray-200" />
+                  </div>
+
+                  <div className="space-y-2">
+                    {sectionsWithImages.map(section => {
+                      if (section.type === 'gallery' && section.imageUrls) {
+                        // Gallery: show each image individually
+                        return section.imageUrls.map((url, idx) => {
+                          if (!url || !url.startsWith('data:')) return null;
+                          return (
+                            <button
+                              key={`${section.id}-${idx}`}
+                              onClick={() => handleDownloadSingleImage(url, section.type, idx)}
+                              className="w-full flex items-center gap-3 p-3 bg-gray-50 hover:bg-indigo-50 rounded-xl transition-all group"
+                            >
+                              <img
+                                src={url}
+                                alt={`갤러리 ${idx + 1}`}
+                                className="w-10 h-10 rounded-lg object-cover flex-shrink-0 border border-gray-200"
+                              />
+                              <div className="text-left flex-1 min-w-0">
+                                <div className="text-sm font-semibold text-gray-800 truncate">
+                                  {SECTION_LABELS[section.type]} - {idx + 1}번
+                                </div>
+                              </div>
+                              <ImageDown size={18} className="text-gray-400 group-hover:text-indigo-500 flex-shrink-0 transition-colors" />
+                            </button>
+                          );
+                        });
+                      }
+
+                      // Single image sections
+                      if (!section.imageUrl || !section.imageUrl.startsWith('data:')) return null;
+                      return (
+                        <button
+                          key={section.id}
+                          onClick={() => handleDownloadSingleImage(section.imageUrl!, section.type)}
+                          className="w-full flex items-center gap-3 p-3 bg-gray-50 hover:bg-indigo-50 rounded-xl transition-all group"
+                        >
+                          <img
+                            src={section.imageUrl}
+                            alt={SECTION_LABELS[section.type]}
+                            className="w-10 h-10 rounded-lg object-cover flex-shrink-0 border border-gray-200"
+                          />
+                          <div className="text-left flex-1 min-w-0">
+                            <div className="text-sm font-semibold text-gray-800 truncate">
+                              {SECTION_LABELS[section.type]}
+                            </div>
+                          </div>
+                          <ImageDown size={18} className="text-gray-400 group-hover:text-indigo-500 flex-shrink-0 transition-colors" />
+                        </button>
+                      );
+                    })}
+                  </div>
+                </>
+              )}
+
+              {/* No images message */}
+              {sectionsWithImages.length === 0 && (
+                <div className="text-center py-6 text-gray-400">
+                  <ImageDown size={32} className="mx-auto mb-2 opacity-50" />
+                  <p className="text-sm">AI로 생성된 이미지가 없습니다.</p>
+                  <p className="text-xs mt-1">섹션 편집에서 이미지를 생성해 주세요.</p>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       )}
     </div>
