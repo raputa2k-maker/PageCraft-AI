@@ -39,6 +39,21 @@ export async function exportPreviewAsPng(): Promise<void> {
     statusBar.style.borderRadius = '0';
   }
 
+  // 섹션 구분선 가로줄 아티팩트 제거 (bg-gray-100 → 흰색 통일)
+  clone.querySelectorAll('.bg-gray-100').forEach((el) => {
+    (el as HTMLElement).style.backgroundColor = '#ffffff';
+  });
+
+  // sticky 요소 해제 (상태바, 홈 인디케이터 렌더링 문제 방지)
+  clone.querySelectorAll('.sticky').forEach((el) => {
+    (el as HTMLElement).style.position = 'relative';
+  });
+
+  // border 아티팩트 제거
+  clone.querySelectorAll('.border-t, .border-b, .border-x').forEach((el) => {
+    (el as HTMLElement).style.border = 'none';
+  });
+
   wrapper.appendChild(clone);
   document.body.appendChild(wrapper);
 

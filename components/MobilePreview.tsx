@@ -237,7 +237,7 @@ const MobilePreview: React.FC<MobilePreviewProps> = ({ sections }) => {
           <div className="bg-white border-t border-gray-100 p-5">
             {section.imageUrl && (
               <div className="mb-4 rounded-2xl overflow-hidden shadow-sm">
-                <img src={section.imageUrl} alt="Product" className="w-full h-32 object-cover" />
+                <img src={section.imageUrl} alt="Product" className="w-full object-cover" />
               </div>
             )}
             <div className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold py-4 px-6 rounded-2xl text-base shadow-lg text-center break-keep leading-snug" style={{ letterSpacing: '-0.01em' }}>
