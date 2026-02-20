@@ -149,7 +149,7 @@ const SectionEditor: React.FC<SectionEditorProps> = ({
 
   return (
     <div
-      className={`bg-white border rounded-xl shadow-sm overflow-hidden transition-all duration-300 animate-fade-in-up ${
+      className={`bg-white border rounded-xl shadow-sm overflow-hidden min-w-0 transition-all duration-300 animate-fade-in-up ${
         isActive
           ? 'border-indigo-400 ring-2 ring-indigo-100 shadow-md animate-pulse-glow'
           : 'border-gray-200 hover:border-gray-300 hover:shadow-md'
@@ -206,7 +206,7 @@ const SectionEditor: React.FC<SectionEditorProps> = ({
           isExpanded ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'
         }`}
       >
-        <div className="p-5 space-y-4">
+        <div className="p-3 sm:p-5 space-y-4">
           {/* Coaching Guide */}
           <div className="bg-indigo-50 border border-indigo-100 p-3.5 rounded-xl text-xs text-indigo-700 break-keep leading-relaxed flex items-start gap-2">
             <span className="text-base flex-shrink-0">💡</span>
@@ -364,11 +364,11 @@ const SectionEditor: React.FC<SectionEditorProps> = ({
             /* Single Image Editor */
             <div>
               <label className="block text-xs font-semibold text-gray-500 mb-2 uppercase tracking-wider">섹션 이미지</label>
-              <div className="flex gap-4 items-start">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-start">
                 {isGeneratingImage ? (
                   <SkeletonLoader type="image" />
                 ) : section.imageUrl ? (
-                  <div className="relative group w-24 h-24 flex-shrink-0 rounded-xl overflow-hidden">
+                  <div className="relative group w-full h-32 sm:w-24 sm:h-24 flex-shrink-0 rounded-xl overflow-hidden">
                     <img src={section.imageUrl} alt="Section" className="w-full h-full object-cover" />
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
                       <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -390,7 +390,7 @@ const SectionEditor: React.FC<SectionEditorProps> = ({
                     </div>
                   </div>
                 ) : (
-                  <div className="w-24 h-24 bg-gray-50 rounded-xl border border-dashed border-gray-200 flex items-center justify-center text-gray-300 flex-shrink-0">
+                  <div className="w-full h-32 sm:w-24 sm:h-24 bg-gray-50 rounded-xl border border-dashed border-gray-200 flex items-center justify-center text-gray-300 flex-shrink-0">
                     <ImageIcon size={24} />
                   </div>
                 )}

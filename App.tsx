@@ -212,12 +212,12 @@ function App() {
     <div className="flex h-full w-full bg-gray-100 overflow-hidden">
 
       {/* ============ EDITOR PANEL ============ */}
-      <div className={`flex-1 flex flex-col h-full bg-white border-r border-gray-200 transition-all duration-300 ${viewMode === 'preview' ? 'hidden' : 'block'}`}>
+      <div className={`flex-1 flex flex-col h-full min-w-0 overflow-x-hidden bg-white border-r border-gray-200 transition-all duration-300 ${viewMode === 'preview' ? 'hidden' : 'block'}`}>
 
         {/* Header */}
-        <div className="p-4 sm:p-5 border-b border-gray-100 bg-white z-10 overflow-hidden">
-          <div className="flex justify-between items-center mb-4 gap-2">
-            <h1 className="text-base sm:text-lg font-black text-gray-900 flex items-center gap-2 flex-shrink-0">
+        <div className="p-3 sm:p-5 border-b border-gray-100 bg-white z-10 flex-shrink-0">
+          <div className="flex justify-between items-center gap-2">
+            <h1 className="text-base sm:text-lg font-black text-gray-900 flex items-center gap-2 min-w-0">
               <div className="w-7 h-7 sm:w-8 sm:h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-sm flex-shrink-0">
                 <Sparkles size={14} className="text-white" />
               </div>
@@ -263,14 +263,17 @@ function App() {
               )}
             </div>
           </div>
+        </div>
 
+        {/* Scrollable Section List */}
+        <div className="flex-1 overflow-y-auto overflow-x-hidden p-3 sm:p-5 custom-scrollbar scroll-smooth">
           {/* Product Info */}
-          <div className="bg-gradient-to-r from-indigo-50 to-purple-50 p-4 rounded-xl border border-indigo-100/50 space-y-3">
+          <div className="bg-gradient-to-r from-indigo-50 to-purple-50 p-3 sm:p-4 rounded-xl border border-indigo-100/50 space-y-2.5 mb-3 max-w-2xl mx-auto">
             <h2 className="text-[10px] font-bold uppercase text-indigo-500 tracking-widest">제품 정보 (AI 생성용)</h2>
             <input
               type="text"
               placeholder="제품명 (예: 꿀잠 베개)"
-              className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 outline-none bg-white text-gray-900 placeholder-gray-400 transition-all"
+              className="w-full px-3 py-2 text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 outline-none bg-white text-gray-900 placeholder-gray-400 transition-all"
               value={product.name}
               onChange={(e) => setProduct({ ...product, name: e.target.value })}
             />
@@ -278,23 +281,20 @@ function App() {
               <input
                 type="text"
                 placeholder="타겟 고객 (예: 직장인)"
-                className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 outline-none bg-white text-gray-900 placeholder-gray-400 transition-all"
+                className="w-full px-3 py-2 text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 outline-none bg-white text-gray-900 placeholder-gray-400 transition-all"
                 value={product.targetAudience}
                 onChange={(e) => setProduct({ ...product, targetAudience: e.target.value })}
               />
               <input
                 type="text"
                 placeholder="핵심 특징 (예: 메모리폼)"
-                className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 outline-none bg-white text-gray-900 placeholder-gray-400 transition-all"
+                className="w-full px-3 py-2 text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 outline-none bg-white text-gray-900 placeholder-gray-400 transition-all"
                 value={product.description}
                 onChange={(e) => setProduct({ ...product, description: e.target.value })}
               />
             </div>
           </div>
-        </div>
 
-        {/* Scrollable Section List */}
-        <div className="flex-1 overflow-y-auto overflow-x-hidden p-3 sm:p-5 custom-scrollbar scroll-smooth">
           <div className="space-y-3 max-w-2xl mx-auto">
             {sections.map((section, index) => (
               <SectionEditor
