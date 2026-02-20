@@ -451,19 +451,30 @@ const SectionEditor: React.FC<SectionEditorProps> = ({
                 <>
                   <div className="space-y-2">
                     {section.items?.map((item, idx) => (
-                      <div key={idx} className="flex gap-2 items-center group">
-                        <span className="text-xs text-gray-400 font-mono w-4 text-center flex-shrink-0">{idx + 1}</span>
-                        <input
-                          type="text"
-                          value={item.title}
-                          onChange={(e) => {
-                            const newItems = [...(section.items || [])];
-                            newItems[idx] = { ...newItems[idx], title: e.target.value };
-                            onUpdate(section.id, { items: newItems });
-                          }}
-                          className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 outline-none transition-all"
-                          placeholder="제목/질문"
-                        />
+                      <div key={idx} className="flex flex-col sm:flex-row gap-1.5 sm:gap-2 sm:items-center group relative">
+                        <div className="flex gap-2 items-center">
+                          <span className="text-xs text-gray-400 font-mono w-4 text-center flex-shrink-0">{idx + 1}</span>
+                          <input
+                            type="text"
+                            value={item.title}
+                            onChange={(e) => {
+                              const newItems = [...(section.items || [])];
+                              newItems[idx] = { ...newItems[idx], title: e.target.value };
+                              onUpdate(section.id, { items: newItems });
+                            }}
+                            className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 outline-none transition-all"
+                            placeholder="제목/질문"
+                          />
+                          <button
+                            onClick={() => {
+                              const newItems = (section.items || []).filter((_, i) => i !== idx);
+                              onUpdate(section.id, { items: newItems.length > 0 ? newItems : [{ title: '', desc: '' }] });
+                            }}
+                            className="p-1.5 text-gray-300 hover:text-red-500 rounded-lg sm:opacity-0 sm:group-hover:opacity-100 transition-all flex-shrink-0"
+                          >
+                            <Trash2 size={13} />
+                          </button>
+                        </div>
                         <input
                           type="text"
                           value={item.desc}
@@ -472,18 +483,10 @@ const SectionEditor: React.FC<SectionEditorProps> = ({
                             newItems[idx] = { ...newItems[idx], desc: e.target.value };
                             onUpdate(section.id, { items: newItems });
                           }}
-                          className="flex-[2] border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 outline-none transition-all"
+                          className="w-full sm:flex-[2] border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 outline-none transition-all ml-6 sm:ml-0"
+                          style={{ width: 'calc(100% - 1.5rem)' }}
                           placeholder="설명/답변"
                         />
-                        <button
-                          onClick={() => {
-                            const newItems = (section.items || []).filter((_, i) => i !== idx);
-                            onUpdate(section.id, { items: newItems.length > 0 ? newItems : [{ title: '', desc: '' }] });
-                          }}
-                          className="p-1.5 text-gray-300 hover:text-red-500 rounded-lg opacity-0 group-hover:opacity-100 transition-all"
-                        >
-                          <Trash2 size={13} />
-                        </button>
                       </div>
                     ))}
                   </div>

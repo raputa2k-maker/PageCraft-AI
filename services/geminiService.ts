@@ -86,7 +86,7 @@ export const generateSectionCopy = async (
 
   try {
     const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
+      model: 'gemini-3-pro-preview',
       contents: prompt,
       config: {
         responseMimeType: "application/json",
@@ -126,7 +126,7 @@ export const generateSectionImage = async (
 
   try {
     const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash-image',
+      model: 'gemini-3-pro-image-preview',
       contents: prompt,
       config: {
         responseModalities: ['TEXT', 'IMAGE'],
@@ -175,7 +175,7 @@ export const generateGalleryImages = async (
     `;
 
     const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash-image',
+      model: 'gemini-3-pro-image-preview',
       contents: prompt,
       config: {
         responseModalities: ['TEXT', 'IMAGE'],
